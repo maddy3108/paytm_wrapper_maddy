@@ -1,0 +1,58 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
+    //enforceUniquePackageName = false
+
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+
+
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    task copyB4AFiles(type: Copy, dependsOn: "assembleRelease") {
+        from 'src/PaytmPayment.jar'
+        from 'build/outputs/aar/PaytmPayment-release.aar'
+        into 'build/B4Alibs'
+        rename { String fileName ->
+            fileName.replace('-release', '')
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+
+    implementation project(':Core')
+    implementation project(':B4AShared')
+    implementation('com.paytm:pgplussdk:1.3.3') {
+        transitive = true;
+    }
+
+}
